@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowUp, ChevronDown, RefreshCw } from "lucide-react";
-// import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   InputGroup,
@@ -19,19 +18,24 @@ import {
   promptTemplateCategories,
 } from "@/components/home/prompt-templates";
 
-/**
- * Main prompt composer on the home page.
- *
- * Lets the user type (or pick a template/random idea for) a build prompt and
- * submit it. On submit it creates a new project and navigates to its workspace,
- * surfacing failures as toasts. Pressing Enter (without Shift) submits.
- */
+import { useCreateProject } from "@/features/projects/hooks/projects";
+import { toast } from "sonner";
+
 export function PromptInput() {
   const [prompt, setPrompt] = useState("");
   const router = useRouter();
-  const isPending = false;
+  const { mutate: createProject, isPending } = useCreateProject();
 
-  function handleSubmit() {}
+  function handleSubmit() {
+    createProject(prompt, {
+      onSuccess: (project) => {
+        router.push(`/projects/${project.id}`);
+      },
+      onError: (error) => {
+        toast.error(error.message);
+      },
+    });
+  }
 
   /**
    * Replace the textarea contents with a chosen template prompt.

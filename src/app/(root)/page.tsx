@@ -1,7 +1,7 @@
 import { GlassNavbar } from "@/components/home/glass-navbar";
 import { HomeBackground } from "@/components/home/home-background";
-// import { ProjectGrid } from "@/components/home/project-grid";
 import { PromptInput } from "@/components/home/prompt-input";
+import { ProjectGrid } from "@/features/projects/components/project-grid";
 
 export default function Home() {
   return (
@@ -13,11 +13,13 @@ export default function Home() {
           <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
             What do you want to create?
           </h1>
-          {/* <MessageScrollerProvider /> */}
+
           <PromptInput />
         </div>
 
-        <div className="mt-16 w-full max-w-5xl">{/* <ProjectGrid /> */}</div>
+        <div className="mt-16 w-full max-w-5xl">
+          <ProjectGrid />
+        </div>
       </main>
     </div>
   );
