@@ -2,7 +2,7 @@
 
 import { getCurrentUser } from "@/features/auth/actions";
 import { inngest } from "@/features/inngest/client";
-import { MessageRole, MessageType } from "@/generated/prisma/enums";
+import { MessageRole, MessageType } from "@/features/generated/prisma/enums";
 import { prisma } from "@/lib/db";
 import { generateSlug } from "random-word-slugs";
 
@@ -30,7 +30,13 @@ export const createProject = async (value: string) => {
       },
     });
 
-    // todo: send project to inngest
+    await inngest.send({
+      name: "code-agent/run",
+      data: {
+        value,
+        projectId: project.id,
+      },
+    });
 
     return project;
   } catch (error) {
