@@ -68,14 +68,22 @@ export const codeAgentFunction = inngest.createFunction(
       { messages: previousMessage },
     );
 
+    const apiKey = process.env.OPENROUTER_API_KEY;
+    if (!apiKey) {
+      throw new Error("OPENROUTER_API_KEY is not configured");
+    }
+
     const geminiModel = openai({
-      model: "nvidia/nemotron-3-ultra-550b-a55b:free",
+      model: "thinkingmachines/inkling:free",
       step,
       apiKey: process.env.OPENROUTER_API_KEY!,
-      baseURL: "https://openrouter.ai/api/v1",
+      baseUrl: "https://openrouter.ai/api/v1",
       defaultParameters: {
-        temperature: 0,
-        max_tokens: 8192,
+        generationConfig: {
+          temperature: 0,
+          maxOutputTokens: 8192,
+          thinkingConfig: { thinkingBudget: 0 },
+        },
       },
     } as Parameters<typeof openai>[0]);
 
@@ -83,7 +91,7 @@ export const codeAgentFunction = inngest.createFunction(
       name: "code-agent",
       description: "An expert coding agent",
       system: PROMPT,
-      model: geminiModel,
+      model: openai({ model: "thinkingmachines/inkling:free" }),
       tools: [
         createTool({
           name: "terminal",
